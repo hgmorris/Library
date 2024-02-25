@@ -49,36 +49,59 @@ async function retrieveOneBook(req, res) {
   }
 }
 
-// Create a new Book
+// Create a new book
 async function createBook(req, res) {
   try {
-    // Extract required fields from the request body
-    const book = {
-      name: req.body.name,
-      category: req.body.category,
-      year: req.body.year
-    };
+      // Extract required fields from the request body
+      const { title, author, publishYear, description, coverImage, thumbnail, price, pageCount, genre, isbn } = req.body;
 
-    const db = mongodb.getDb();
-    if (!db) {
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
+      // Validate the required fields
+      const validationErrors = [];
+      if (!title) validationErrors.push('Title is required');
+      if (!author) validationErrors.push('Author is required');
+      if (!publishYear) validationErrors.push('Publish year is required');
+      if (!isbn) validationErrors.push('ISBN is required');
+      // Add more validation rules as needed...
 
-    const booksCollection = db.collection('Books');
+      if (validationErrors.length > 0) {
+          return res.status(400).json({ errors: validationErrors });
+      }
 
-    // Insert the new Book into the database
-    const result = await booksCollection.insertOne(book);
+      const db = getDb();
+      if (!db) {
+          return res.status(500).json({ error: 'Internal Server Error' });
+      }
 
-    // Extract the generated Book ID from the result
-    const bookId = result.insertedId;
+      const bookCollection = db.collection('books');
 
-    // Return the new Book ID in the response
-    res.status(201).json({ bookId });
+      // Construct the book object
+      const book = {
+          title,
+          author,
+          publishYear,
+          description,
+          coverImage,
+          thumbnail,
+          price,
+          pageCount,
+          genre,
+          isbn
+      };
+
+      // Insert the new book into the database
+      const result = await bookCollection.insertOne(book);
+
+      // Extract the generated book ID from the result
+      const bookId = result.insertedId;
+
+      // Return the new book ID in the response
+      res.status(201).json({ bookId });
   } catch (error) {
-    console.error('Error creating Book:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Error creating book:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
   }
 }
+
 
 // Update a Book
 async function updateBook(req, res) {

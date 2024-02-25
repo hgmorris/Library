@@ -1,26 +1,31 @@
-const swaggerUi = require('swagger-ui-express')
-const swaggerDocument = require('./swagger-output.json')
-var cors = require('cors')
-
-
-// Import the express module
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger-output.json');
+const cors = require('cors');
 
-
-// Create an instance of the Express application
+// Initialize Express application
 const app = express();
 
+// MongoDB initialization script
 const { initDb } = require('./mongodb/mongodb.js');
-app.use(cors())
-// Create an instance of the Express Router
-const router = require('./router/index.js');
-// Add support for CORS
 
+// Middleware to parse JSON bodies. This fixes issues where req.body might be undefined.
+app.use(express.json());
+
+// CORS Middleware for handling cross-origin requests
+app.use(cors());
+
+// Router setup
+const router = require('./router/index.js');
 app.use('/', router);
 
-// Set the port for the server. If the environment variable 'Port' is not set, default to port 3000
+// Swagger UI setup for API documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Server port configuration
 const port = process.env.PORT || 8080;
 
+// Initialize MongoDB and start the server upon successful database connection
 initDb((err) => {
     if (err) {
         console.error('Error initializing MongoDB:', err);
@@ -30,4 +35,3 @@ initDb((err) => {
         });
     }
 });
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

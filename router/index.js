@@ -1,24 +1,23 @@
 
 const router = require('express').Router();
 
-const HomeRoutes = require('../controller/bookcontroller');
+const BookRoutes = require('../controller/bookcontroller.js');
 const HomeRoutes = require('../controller/morrisroutes.js');
 
 // Use the contacts routes
-router.get('/', HomeRoutes.getMorris);
+router.get('/', HomeRoutes.getHome);
 
 // Default route
-router.get('/', nameRoutes.getHome);
-router.get('/Books', BookRoutes.getAll);
-router.get('/Books/:id', BookRoutes.getSingle);
+router.get('/Books', BookRoutes.retrieveBooks);
+router.get('/Books/:id', BookRoutes.retrieveOneBook);
 
 // POST route to create a new Book
-router.post('/Books', BookRoutes.createBooks);
+router.post('/Books', BookRoutes.createBook);
  
 // PUT route to update a Books
-router.put('/Books/:id', BookRoutes.updateBooks);
+router.put('/Books/:id', BookRoutes.updateBook);
  
 // DELETE route to delete a Books
-router.delete('/Books/:id', BookRoutes.deleteBooks);
+router.delete('/Books/:id', BookRoutes.deleteBook);
 
 module.exports = router;

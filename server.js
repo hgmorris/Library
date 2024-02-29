@@ -2,7 +2,6 @@ const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger-output.json');
 const cors = require('cors');
-const passport = require('passport');
 const {auth, requiresAuth} = require('express-openid-connect');
 require('dotenv').config();
 
@@ -61,28 +60,4 @@ initDb((err) => {
         });
     }
 });
-
-
-// auth login
-// router.get('/login', (req, res) => {
-//     res.send('Logging in...');
-// });
-
-// // auth logout
-// router.get('/logout', (req, res) => {
-//     // handle with passport
-//     req.logout();
-//     res.redirect('/');
-// });
-
-// // auth with google
-// router.get('/google', passport.authenticate('google', {
-//     scope: ['profile', 'email']
-// }));
-
-// // callback route for google to redirect to
-// router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
-//     // res.send(req.user);
-//     res.redirect('/profile/');
-// });
 

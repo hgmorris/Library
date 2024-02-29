@@ -3,7 +3,22 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger-output.json');
 const cors = require('cors');
 const passport = require('passport');
-const cookieSession = require('cookie-session');
+const {auth, requiresAuth} = require('express-openid-connect');
+require('dotenv').config();
+
+
+const config = {
+    authRequired: false,
+    auth0Logout: true,
+    baseURL: process.env.BASE_URL,
+    clientID: process.env.CLIENT_ID,
+    issuerBaseURL: process.env.ISSUER_BASE_URL,
+    secret: process.env.SECRET,
+
+};
+
+// auth router attaches /login, /logout, and /callback routes to the baseURL
+
 
 
 // Initialize Express application
@@ -19,11 +34,19 @@ app.use(express.json());
 app.use(cors());
 
 // Router setup
-const router = require('./router/index.js');
-app.use('/', router);
+// const router = require('./router/index.js');
+// app.use('/', router);
 
+app.use(auth(config));
+
+// req.isAuthenticated is provided from the auth router
+app.get('/', (req, res) => {
+  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+});
 // Swagger UI setup for API documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app
+.use('/', requiresAuth(), require('./router/index.js'))
+.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Server port configuration
 const port = process.env.PORT || 8080;
@@ -41,25 +64,25 @@ initDb((err) => {
 
 
 // auth login
-router.get('/login', (req, res) => {
-    res.send('Logging in...');
-});
+// router.get('/login', (req, res) => {
+//     res.send('Logging in...');
+// });
 
-// auth logout
-router.get('/logout', (req, res) => {
-    // handle with passport
-    req.logout();
-    res.redirect('/');
-});
+// // auth logout
+// router.get('/logout', (req, res) => {
+//     // handle with passport
+//     req.logout();
+//     res.redirect('/');
+// });
 
-// auth with google
-router.get('/google', passport.authenticate('google', {
-    scope: ['profile', 'email']
-}));
+// // auth with google
+// router.get('/google', passport.authenticate('google', {
+//     scope: ['profile', 'email']
+// }));
 
-// callback route for google to redirect to
-router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
-    // res.send(req.user);
-    res.redirect('/profile/');
-});
+// // callback route for google to redirect to
+// router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
+//     // res.send(req.user);
+//     res.redirect('/profile/');
+// });
 

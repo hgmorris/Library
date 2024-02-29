@@ -12,9 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "autogen": "^0.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.2",
     "express": "^4.18.2",
+    "express-openid-connect": "^2.17.1",
     "mongodb": "^6.3.0",
     "nodemon": "^1.19.4",
     "swagger-ui-express": "^5.0.0"

@@ -5,7 +5,7 @@ const BookRoutes = require('../controller/bookcontroller.js');
 const HomeRoutes = require('../controller/morrisroutes.js');
 const FilmsRoutes = require('../controller/film.js');
 const auth = require('express-openid-connect');
-const {requiresAuth} = require('express-openid-connect');
+// const {requiresAuth} = require('express-openid-connect');
 
 
 // Use the contacts routes

@@ -32,9 +32,6 @@ app.use(express.json());
 // CORS Middleware for handling cross-origin requests
 app.use(cors());
 
-// Router setup
-// const router = require('./router/index.js');
-// app.use('/', router);
 
 app.use(auth(config));
 
